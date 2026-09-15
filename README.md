@@ -27,3 +27,10 @@ DELETE).
 5. Implementar testes unitários 
 6. O código deve ser bem estruturado e seguir as melhores práticas de programação. 
 7. O código deve seguir algum padrão de projeto conhecido pela comunidade. 
+
+### Endpoints: 
+1. POST /metadata: Cadastrar um novo metadado de tabela 
+2. GET /metadata: Listagem dos metadados 
+3. GET /metadata/{metadata_id}: Detalhes de um metadado 
+4. PUT /metadata/{metadata_id}: Atualizar metadados 
+5. DELETE /metadata/{metadata_id}: Deletar metadados 
