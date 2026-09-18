@@ -119,3 +119,17 @@ curl -X PUT http://localhost:8000/metadata/{id} \
     ],
     "change_description": "Adicionada coluna order_status."
   }'
+
+  
+**Obter detalhes do metadado pelo ID:**
+
+  curl --location 'http://localhost:8000/metadata/6aab5a2ed2f56b9c34c29e17' \
+--header 'Content-Type: application/json' \
+--data ''
+
+
+**Deletar metadado pelo ID:**
+
+curl --location --request DELETE 'http://localhost:8000/metadata/6aab5a2ed2f56b9c34c29e17' \
+--header 'Content-Type: application/json' \
+--data ''
