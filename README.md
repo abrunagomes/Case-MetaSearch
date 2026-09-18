@@ -34,3 +34,88 @@ DELETE).
 3. GET /metadata/{metadata_id}: Detalhes de um metadado 
 4. PUT /metadata/{metadata_id}: Atualizar metadados 
 5. DELETE /metadata/{metadata_id}: Deletar metadados 
+
+## Metadata Service
+É um microserviço de catálogo de metadados que realiza buscas nas tabelas de um data lake, permitindo entender seu contexto, estrutura e owner, além de acompanhar a evolução do esquema pelo registro de histórico.
+
+### Stack
+FastAPI: framework para construção da API assíncrona
+MongoDB: base de dados para persistir os metadados
+Pydantic: para validação e modelagem de dados
+Pytest: para os testes unitários
+
+## Arquitetura
+
+### App
+main.py: orquestração da aplicação
+core/exceptions.py: trata as exceções do domínio
+db/mongodb.py: Singleton de conexão com o MongoDB
+models/metadata.py: modelagemde metadados
+schemas/metadata_schemas.py: DTOs da resquest e response
+repositories/metadata_repository.py: repositório de exceções de domínio
+services/metadata_service.py: regras de negócio das chamadas
+api/dependencies.py: provider de dependências da API
+api/routes/metadata_routes.py: controller das rotas
+
+### Tests
+conftest.py: cria um repositório fake em memória
+test_models.py: testes das entidades de domínios
+test_metadata_service: teste das camadas de serviço
+test_metadata_routes.py: teste de integração das rotas
+
+### Modelagem de dados
+
+Uma única collection é usada com o schema atual e o histórico de versões do documento da tabela. Leitura conjunta para facilitar a consulta
+
+
+### Como executar
+
+python -m venv .venv
+source .venv/bin/activate  #para criar o virtual environment
+
+pip install -r requirements-dev.txt
+cp .env .env       #para instalar dependências e configurar variáveis de ambiente locais
+
+uvicorn app.main:app --reload
+
+
+## Testes
+pip install -r requirements-dev.txt
+pytest -v
+
+
+**Criar um metadado:**
+
+curl -X POST http://localhost:8000/metadata \
+  -H "Content-Type: application/json" \
+  -d '{
+    "database_name": "sales_lake",
+    "schema_name": "gold",
+    "table_name": "fct_orders",
+    "description": "Tabela fato com pedidos consolidados de vendas.",
+    "domain": "vendas",
+    "layer": "gold",
+    "tags": ["vendas", "pedidos"],
+    "owner": {"name": "Time de Dados de Vendas", "email": "dados-vendas@empresa.com"},
+    "schema_fields": [
+      {"name": "order_id", "data_type": "string", "nullable": false, "is_primary_key": true}
+    ]
+  }'
+
+**Listagem de metadados por filtro:**
+
+
+curl "http://localhost:8000/metadata?domain=vendas&page=1&page_size=10"
+
+
+**Atualizar o schema:**
+
+curl -X PUT http://localhost:8000/metadata/{id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "schema_fields": [
+      {"name": "order_id", "data_type": "string", "is_primary_key": true},
+      {"name": "order_status", "data_type": "string", "nullable": false}
+    ],
+    "change_description": "Adicionada coluna order_status."
+  }'
