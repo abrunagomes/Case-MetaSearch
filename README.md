@@ -39,28 +39,28 @@ DELETE).
 É um microserviço de catálogo de metadados que realiza buscas nas tabelas de um data lake, permitindo entender seu contexto, estrutura e owner, além de acompanhar a evolução do esquema pelo registro de histórico.
 
 ### Stack
-FastAPI: framework para construção da API assíncrona
-MongoDB: base de dados para persistir os metadados
-Pydantic: para validação e modelagem de dados
+FastAPI: framework para construção da API assíncrona \
+MongoDB: base de dados para persistir os metadados \
+Pydantic: para validação e modelagem de dados \
 Pytest: para os testes unitários
 
 ## Arquitetura
 
 ### App
-main.py: orquestração da aplicação
-core/exceptions.py: trata as exceções do domínio
-db/mongodb.py: Singleton de conexão com o MongoDB
-models/metadata.py: modelagemde metadados
-schemas/metadata_schemas.py: DTOs da resquest e response
-repositories/metadata_repository.py: repositório de exceções de domínio
-services/metadata_service.py: regras de negócio das chamadas
-api/dependencies.py: provider de dependências da API
+main.py: orquestração da aplicação \
+core/exceptions.py: trata as exceções do domínio \
+db/mongodb.py: Singleton de conexão com o MongoDB \
+models/metadata.py: modelagemde metadados \
+schemas/metadata_schemas.py: DTOs da resquest e response \
+repositories/metadata_repository.py: repositório de exceções de domínio \
+services/metadata_service.py: regras de negócio das chamadas \
+api/dependencies.py: provider de dependências da API \
 api/routes/metadata_routes.py: controller das rotas
 
 ### Tests
-conftest.py: cria um repositório fake em memória
-test_models.py: testes das entidades de domínios
-test_metadata_service: teste das camadas de serviço
+conftest.py: cria um repositório fake em memória \
+test_models.py: testes das entidades de domínios \
+test_metadata_service: teste das camadas de serviço \
 test_metadata_routes.py: teste de integração das rotas
 
 ### Modelagem de dados
@@ -105,7 +105,8 @@ curl -X POST http://localhost:8000/metadata \
 **Listagem de metadados por filtro:**
 
 
-curl "http://localhost:8000/metadata?domain=vendas&page=1&page_size=10"
+curl --location --request GET "http://localhost:8000/metadata?domain=vendas&page=1&page_size=10" /
+--header 'Content-Type: application/json' 
 
 
 **Atualizar o schema:**
@@ -123,7 +124,7 @@ curl -X PUT http://localhost:8000/metadata/{id} \
   
 **Obter detalhes do metadado pelo ID:**
 
-  curl --location 'http://localhost:8000/metadata/6aab5a2ed2f56b9c34c29e17' \
+  curl --location --request GET 'http://localhost:8000/metadata/6aab5a2ed2f56b9c34c29e17' \
 --header 'Content-Type: application/json' \
 --data ''
 
